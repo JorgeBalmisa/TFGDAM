@@ -1,4 +1,4 @@
-package services;
+package com.example.main.services;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,9 +6,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import entities.Persona;
+import com.example.main.entities.Persona;
+import com.example.main.repositories.PersonaRepository;
+
 import jakarta.transaction.Transactional;
-import repositories.PersonaRepository;
 
 @Service
 public class PersonaService implements BaseService<Persona> {

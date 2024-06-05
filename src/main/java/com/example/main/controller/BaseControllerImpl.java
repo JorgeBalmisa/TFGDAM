@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.main.entities.Base;
-import com.example.main.services.BaseServiceImpl;
+import com.example.main.servicesImpl.BaseServiceImpl;
 
 public abstract class BaseControllerImpl<T extends Base, S extends BaseServiceImpl<T, Long>> implements BaseController<T, Long>{
 

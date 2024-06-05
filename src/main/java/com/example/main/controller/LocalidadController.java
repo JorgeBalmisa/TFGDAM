@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.main.entities.Localidad;
-import com.example.main.services.LocalidadServiceImpl;
+import com.example.main.servicesImpl.LocalidadServiceImpl;
 
 @RestController
 @CrossOrigin(origins = "*")

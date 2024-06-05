@@ -1,4 +1,4 @@
-package com.example.main.services;
+package com.example.main.servicesImpl;
 
 import java.io.Serializable;
 import java.util.List;
@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.example.main.entities.Base;
 import com.example.main.entities.Persona;
 import com.example.main.repositories.BaseRepository;
+import com.example.main.services.BaseService;
 
 import jakarta.transaction.Transactional;
 

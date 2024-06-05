@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.main.entities.Autor;
-import com.example.main.services.AutorServiceImpl;
+import com.example.main.servicesImpl.AutorServiceImpl;
 
 @RestController
 @CrossOrigin(origins = "*")

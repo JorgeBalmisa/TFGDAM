@@ -1,6 +1,7 @@
 package com.example.main.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,6 +27,7 @@ public abstract class BaseControllerImpl<T extends Base, S extends BaseServiceIm
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\":\"Error. Inténtelo más tarde\"}");
 		}
 	}
+	
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getOne(@PathVariable Long id) {

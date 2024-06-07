@@ -52,7 +52,7 @@ public abstract class BaseControllerImpl<T extends Base, S extends BaseServiceIm
 			return ResponseEntity.status(HttpStatus.CREATED).body(savedEntity);
 		} catch (Exception e) {
 			
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error. Inténtelo más tarde\"}");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error. " + e.getMessage() + " Inténtelo más tarde\"}");
 		}
 	}
 

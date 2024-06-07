@@ -21,10 +21,37 @@ import com.example.main.servicesImpl.PersonaServiceImpl;
 @RequestMapping(path = "api/v1/personas")
 public class PersonaController extends BaseControllerImpl<Persona, PersonaServiceImpl> {
 
-	@GetMapping("/search")
-	public ResponseEntity<?> search(@RequestParam String filtro) {
+	@GetMapping("/searchNombre")
+	public ResponseEntity<?> searchNombre(@RequestParam String filtro) {
 		try {
-			return ResponseEntity.status(HttpStatus.OK).body(servicio.search(filtro));
+			return ResponseEntity.status(HttpStatus.OK).body(servicio.searchNombre(filtro));
+		}catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\": \"" + e.getMessage() + "\"}");
+		}
+	}
+	
+	@GetMapping("/searchApellido")
+	public ResponseEntity<?> searchApellido(@RequestParam String filtro) {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(servicio.searchApellido(filtro));
+		}catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\": \"" + e.getMessage() + "\"}");
+		}
+	}
+	
+	@GetMapping("/searchNotName")
+	public ResponseEntity<?> searchNotName(@RequestParam String filtro) {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(servicio.searchNotName(filtro));
+		}catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\": \"" + e.getMessage() + "\"}");
+		}
+	}
+	
+	@GetMapping("/searchNombreEnding")
+	public ResponseEntity<?> searchNombreEnding(@RequestParam String filtro) {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(servicio.searchNombreEnding(filtro));
 		}catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\": \"" + e.getMessage() + "\"}");
 		}

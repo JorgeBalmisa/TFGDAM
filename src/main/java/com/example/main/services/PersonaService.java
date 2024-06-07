@@ -9,7 +9,13 @@ import com.example.main.entities.Persona;
 
 public interface PersonaService extends BaseService<Persona, Long>{
 
-	List<Persona> search(String filtro) throws Exception;
+	List<Persona> searchNombre(String filtro) throws Exception;
+	
+	List<Persona> searchApellido(String filtro) throws Exception;
+	
+	List<Persona> searchNotName(String filtro) throws Exception;
+	
+	List<Persona> searchNombreEnding(String filtro) throws Exception;
 	
 	
 }

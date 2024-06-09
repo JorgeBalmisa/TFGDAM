@@ -22,9 +22,9 @@ public class PersonaServiceImpl extends BaseServiceImpl<Persona, Long> implement
 
 	@Autowired
 	private PersonaRepository personaRepository;
-	
+
 	@Autowired
-    private LocalidadService localidadService;
+	private LocalidadService localidadService;
 
 	private static final String LETTERS = "TRWAGMYFPDXBNJZSQVHLCKE";
 
@@ -35,8 +35,8 @@ public class PersonaServiceImpl extends BaseServiceImpl<Persona, Long> implement
 	@Override
 	public List<Persona> searchNombre(String filtro) throws Exception {
 		try {
-			List<Persona> personas = personaRepository.findByNombreContaining(filtro);
-			return personas;
+			return personaRepository.findByNombreContaining(filtro);
+
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
@@ -52,11 +52,11 @@ public class PersonaServiceImpl extends BaseServiceImpl<Persona, Long> implement
 				persona.setDni(dni);
 			}
 			if (persona.getDomicilio() != null && persona.getDomicilio().getLocalidad() != null) {
-                Localidad localidad = persona.getDomicilio().getLocalidad();
-                // Crear la localidad si no ha sido creada aún
-                localidad = localidadService.save(localidad);
-                persona.getDomicilio().setLocalidad(localidad);
-            }
+				Localidad localidad = persona.getDomicilio().getLocalidad();
+				// Crear la localidad si no ha sido creada aún
+				localidad = localidadService.save(localidad);
+				persona.getDomicilio().setLocalidad(localidad);
+			}
 			return super.save(persona);
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
@@ -73,8 +73,8 @@ public class PersonaServiceImpl extends BaseServiceImpl<Persona, Long> implement
 	@Override
 	public List<Persona> searchApellido(String filtro) throws Exception {
 		try {
-			List<Persona> personas = personaRepository.findByApellidoContaining(filtro);
-			return personas;
+			return personaRepository.findByApellidoContaining(filtro);
+			
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
@@ -83,8 +83,8 @@ public class PersonaServiceImpl extends BaseServiceImpl<Persona, Long> implement
 	@Override
 	public List<Persona> searchNotName(String filtro) throws Exception {
 		try {
-			List<Persona> personas = personaRepository.findByNombreIsNot(filtro);
-			return personas;
+			return personaRepository.findByNombreIsNot(filtro);
+			
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
@@ -93,11 +93,28 @@ public class PersonaServiceImpl extends BaseServiceImpl<Persona, Long> implement
 	@Override
 	public List<Persona> searchNombreEnding(String filtro) throws Exception {
 		try {
-			List<Persona> personas = personaRepository.findByNombreEndingWith(filtro);
-			return personas;
+			return personaRepository.findByNombreEndingWith(filtro);
+			
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
 	}
+
+	@Override
+	public List<Persona> searchDni(String filtro) throws Exception {
+		return personaRepository.findByDni(filtro);
+	}
+
+	@Override
+	public List<Persona> searchDomicilio_Loc_Den(String filtro) throws Exception {
+		return personaRepository.findByDomicilio_Localidad_Denominacion(filtro);
+	}
+
+	@Override
+	public List<Persona> searchDomicilio_Calle_Numero(String calle, Integer numero) throws Exception {
+		return personaRepository.findByDomicilio_CalleAndDomicilio_Numero(calle, numero);
+	}
+	
+	
 
 }

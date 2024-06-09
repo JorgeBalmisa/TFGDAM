@@ -5,6 +5,7 @@ import com.example.main.entities.Domicilio;
 import com.example.main.entities.Localidad;
 import com.example.main.entities.Persona;
 import com.example.main.servicesImpl.PersonaServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,17 +14,21 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
 
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -32,6 +37,9 @@ class PersonaControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
+
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@MockBean
 	private PersonaServiceImpl servicio;
@@ -165,5 +173,288 @@ class PersonaControllerTest {
 				.andExpect(status().isInternalServerError())
 				.andExpect(MockMvcResultMatchers.content().string("{\"error\":\"Error al eliminar la persona\"}"));
 	}
+
+	@Test
+	void testSave_Success() throws Exception {
+		// Arrange
+		Localidad localidad = new Localidad();
+		localidad.setDenominacion("Guarroman");
+
+		Domicilio domicilio = new Domicilio();
+		domicilio.setCalle("San Pepito");
+		domicilio.setNumero(2);
+		domicilio.setLocalidad(localidad);
+
+		Persona persona = new Persona();
+		persona.setNombre("Pedro");
+		persona.setApellido("Martinez");
+		persona.setDni("12345678A");
+		persona.setDomicilio(domicilio);
+
+		when(servicio.save(any())).thenReturn(persona);
+
+		// Act & Assert
+		mockMvc.perform(post("/api/v1/personas/save").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(persona))).andExpect(status().isCreated())
+				.andExpect(jsonPath("$.nombre").value("Pedro")).andExpect(jsonPath("$.apellido").value("Martinez"))
+				.andExpect(jsonPath("$.dni").value("12345678A"))
+				.andExpect(jsonPath("$.domicilio.calle").value("San Pepito"))
+				.andExpect(jsonPath("$.domicilio.numero").value(2))
+				.andExpect(jsonPath("$.domicilio.localidad.denominacion").value("Guarroman"));
+	}
+
+	@Test
+	void testSave_Exception() throws Exception {
+		// Arrange
+		Localidad localidad = new Localidad();
+		localidad.setDenominacion("Guarroman");
+
+		Domicilio domicilio = new Domicilio();
+		domicilio.setCalle("San Pepito");
+		domicilio.setNumero(2);
+		domicilio.setLocalidad(localidad);
+
+		Persona persona = new Persona();
+		persona.setNombre("Pedro");
+		persona.setApellido("Martinez");
+		persona.setDni("12345678A");
+		persona.setDomicilio(domicilio);
+
+		when(servicio.save(any())).thenThrow(new Exception("Error al guardar la persona"));
+
+		// Act & Assert
+		mockMvc.perform(post("/api/v1/personas/save").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(persona))).andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.error").value("Error. Error al guardar la persona Inténtelo más tarde"));
+	}
+
+	@Test
+	void testUpdate_Success() throws Exception {
+		// Arrange
+		Long id = 1L;
+		Persona updatedPersona = new Persona();
+		updatedPersona.setId(id); // Assuming setId exists in Persona class
+		updatedPersona.setNombre("UpdatedName");
+		updatedPersona.setApellido("UpdatedApellido");
+		updatedPersona.setDni("12345678A");
+
+		when(servicio.update(any(Long.class), any(Persona.class))).thenReturn(updatedPersona);
+
+		// Act & Assert
+		mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/personas/{id}", id).contentType(MediaType.APPLICATION_JSON)
+				.content("{ \"nombre\": \"UpdatedName\", \"apellido\": \"UpdatedApellido\", \"dni\": \"12345678A\" }"))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	void testUpdate_Exception() throws Exception {
+		// Arrange
+		Long id = 1L;
+		when(servicio.update(any(Long.class), any(Persona.class)))
+				.thenThrow(new Exception("Error al actualizar la persona"));
+
+		// Act & Assert
+		mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/personas/{id}", id).contentType(MediaType.APPLICATION_JSON)
+				.content("{ \"nombre\": \"UpdatedName\", \"apellido\": \"UpdatedApellido\", \"dni\": \"12345678A\" }"))
+				.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	void testSearchNombre_Success() throws Exception {
+		// Arrange
+		String filtro = "Pedro";
+		Persona persona = new Persona();
+		persona.setNombre("Pedro");
+		List<Persona> personas = new ArrayList<>();
+		personas.add(persona);
+		when(servicio.searchNombre(filtro)).thenReturn(personas);
+
+		// Act & Assert
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchNombre").param("filtro", filtro))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	void testSearchNombre_Exception() throws Exception {
+		// Arrange
+		String filtro = "Juan";
+		when(servicio.searchNombre(filtro)).thenThrow(new Exception("Persona no encontrada"));
+
+		// Act & Assert
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchNombre").param("filtro", filtro))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	void testSearchApellido_Success() throws Exception {
+		// Arrange
+		String filtro = "Martinez";
+		Persona persona = new Persona();
+		persona.setApellido("Martinez");
+		List<Persona> personas = new ArrayList<>();
+		personas.add(persona);
+		when(servicio.searchApellido(filtro)).thenReturn(personas);
+
+		// Act & Assert
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchApellido").param("filtro", filtro))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	void testSearchApellido_Exception() throws Exception {
+		// Arrange
+		String filtro = "Gonzalez";
+		when(servicio.searchApellido(filtro)).thenThrow(new Exception("Persona no encontrada"));
+
+		// Act & Assert
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchApellido").param("filtro", filtro))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	void testSearchNotName_Success() throws Exception {
+		// Arrange
+		String filtro = "Martinez";
+		Persona persona = new Persona();
+		persona.setNombre("Juan");
+		List<Persona> personas = new ArrayList<>();
+		personas.add(persona);
+		when(servicio.searchNotName(filtro)).thenReturn(personas);
+
+		// Act & Assert
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchNotName").param("filtro", filtro))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	void testSearchNotName_Exception() throws Exception {
+		// Arrange
+		String filtro = "Gonzalez";
+		when(servicio.searchNotName(filtro)).thenThrow(new Exception("Persona no encontrada"));
+
+		// Act & Assert
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchNotName").param("filtro", filtro))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	void testSearchNombreEnding_Success() throws Exception {
+		// Arrange
+		String filtro = "ez";
+		Persona persona = new Persona();
+		persona.setNombre("Lopez");
+		List<Persona> personas = new ArrayList<>();
+		personas.add(persona);
+		when(servicio.searchNombreEnding(filtro)).thenReturn(personas);
+
+		// Act & Assert
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchNombreEnding").param("filtro", filtro))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	void testSearchNombreEnding_Exception() throws Exception {
+		// Arrange
+		String filtro = "Gonzalez";
+		when(servicio.searchNombreEnding(filtro)).thenThrow(new Exception("Persona no encontrada"));
+
+		// Act & Assert
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchNombreEnding").param("filtro", filtro))
+				.andExpect(status().isNotFound());
+	}
+	
+	@Test
+    void testSearchDni_Success() throws Exception {
+        // Arrange
+        String filtro = "12345678A";
+        Persona persona = new Persona();
+        persona.setNombre("Pedro");
+        persona.setApellido("Martinez");
+        persona.setDni(filtro);
+        List<Persona> personas = new ArrayList<>();
+        personas.add(persona);
+        when(servicio.searchDni(filtro)).thenReturn(personas);
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchDni")
+                .param("filtro", filtro))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testSearchDni_Exception() throws Exception {
+        // Arrange
+        String filtro = "87654321B";
+        when(servicio.searchDni(filtro)).thenThrow(new Exception("Persona no encontrada"));
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchDni")
+                .param("filtro", filtro))
+                .andExpect(status().isNotFound());
+    }
+    
+    @Test
+    void testSearchByLocalidad_Success() throws Exception {
+        // Arrange
+        String localidad = "Guarroman";
+        Persona persona = new Persona();
+        persona.setNombre("Pedro");
+        persona.setApellido("Martinez");
+        persona.setDni("12345678A");
+        List<Persona> personas = new ArrayList<>();
+        personas.add(persona);
+        when(servicio.searchDomicilio_Loc_Den(localidad)).thenReturn(personas);
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchByLocalidad")
+                .param("localidad", localidad))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testSearchByLocalidad_Exception() throws Exception {
+        // Arrange
+        String localidad = "Guarroman";
+        when(servicio.searchDomicilio_Loc_Den(localidad)).thenThrow(new Exception("Error al buscar personas"));
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchByLocalidad")
+                .param("localidad", localidad))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testSearchByDomicilio_Success() throws Exception {
+        // Arrange
+        String calle = "San Pepito";
+        int numero = 2;
+        Persona persona = new Persona();
+        persona.setNombre("Pedro");
+        persona.setApellido("Martinez");
+        persona.setDni("12345678A");
+        List<Persona> personas = new ArrayList<>();
+        personas.add(persona);
+        when(servicio.searchDomicilio_Calle_Numero(calle, numero)).thenReturn(personas);
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchByDomicilio")
+                .param("calle", calle)
+                .param("numero", String.valueOf(numero)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testSearchByDomicilio_Exception() throws Exception {
+        // Arrange
+        String calle = "San Pepito";
+        int numero = 2;
+        when(servicio.searchDomicilio_Calle_Numero(calle, numero)).thenThrow(new Exception("Error al buscar personas"));
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchByDomicilio")
+                .param("calle", calle)
+                .param("numero", String.valueOf(numero)))
+                .andExpect(status().isNotFound());
+    }
 
 }

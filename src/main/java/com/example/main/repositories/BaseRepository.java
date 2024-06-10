@@ -9,7 +9,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.query.Param;
 
 import com.example.main.entities.Base;
-import com.example.main.entities.Persona;
+import com.example.main.entities.Cliente;
 
 @NoRepositoryBean  // Para que no se creen instancias de esta interfaz
 public interface BaseRepository <T extends Base, ID extends Serializable> extends JpaRepository<T, ID>{

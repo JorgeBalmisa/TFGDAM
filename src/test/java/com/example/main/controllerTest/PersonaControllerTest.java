@@ -1,10 +1,10 @@
 package com.example.main.controllerTest;
 
-import com.example.main.controller.PersonaController;
+import com.example.main.controller.ClienteController;
 import com.example.main.entities.Domicilio;
 import com.example.main.entities.Localidad;
-import com.example.main.entities.Persona;
-import com.example.main.servicesImpl.PersonaServiceImpl;
+import com.example.main.entities.Cliente;
+import com.example.main.servicesImpl.ClienteServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(PersonaController.class)
+@WebMvcTest(ClienteController.class)
 class PersonaControllerTest {
 
 	@Autowired
@@ -42,7 +42,7 @@ class PersonaControllerTest {
 	private ObjectMapper objectMapper;
 
 	@MockBean
-	private PersonaServiceImpl servicio;
+	private ClienteServiceImpl servicio;
 
 	@BeforeEach
 	public void setUp() {
@@ -60,19 +60,19 @@ class PersonaControllerTest {
 		domicilio.setNumero(2);
 		domicilio.setLocalidad(localidad);
 
-		Persona persona1 = new Persona();
+		Cliente persona1 = new Cliente();
 		persona1.setNombre("Pedro");
 		persona1.setApellido("Martinez");
 		persona1.setDni("12345678A");
 		persona1.setDomicilio(domicilio);
 
-		Persona persona2 = new Persona();
+		Cliente persona2 = new Cliente();
 		persona2.setNombre("Juan");
 		persona2.setApellido("Perez");
 		persona2.setDni("87654321B");
 		persona2.setDomicilio(domicilio);
 
-		List<Persona> expectedResponse = Arrays.asList(persona1, persona2);
+		List<Cliente> expectedResponse = Arrays.asList(persona1, persona2);
 		when(servicio.findAll()).thenReturn(expectedResponse);
 
 		// Act & Assert
@@ -103,7 +103,7 @@ class PersonaControllerTest {
 		domicilio.setNumero(2);
 		domicilio.setLocalidad(localidad);
 
-		Persona persona = new Persona();
+		Cliente persona = new Cliente();
 		persona.setNombre("Pedro");
 		persona.setApellido("Martinez");
 		persona.setDni("12345678A");
@@ -185,7 +185,7 @@ class PersonaControllerTest {
 		domicilio.setNumero(2);
 		domicilio.setLocalidad(localidad);
 
-		Persona persona = new Persona();
+		Cliente persona = new Cliente();
 		persona.setNombre("Pedro");
 		persona.setApellido("Martinez");
 		persona.setDni("12345678A");
@@ -214,7 +214,7 @@ class PersonaControllerTest {
 		domicilio.setNumero(2);
 		domicilio.setLocalidad(localidad);
 
-		Persona persona = new Persona();
+		Cliente persona = new Cliente();
 		persona.setNombre("Pedro");
 		persona.setApellido("Martinez");
 		persona.setDni("12345678A");
@@ -232,13 +232,13 @@ class PersonaControllerTest {
 	void testUpdate_Success() throws Exception {
 		// Arrange
 		Long id = 1L;
-		Persona updatedPersona = new Persona();
+		Cliente updatedPersona = new Cliente();
 		updatedPersona.setId(id); // Assuming setId exists in Persona class
 		updatedPersona.setNombre("UpdatedName");
 		updatedPersona.setApellido("UpdatedApellido");
 		updatedPersona.setDni("12345678A");
 
-		when(servicio.update(any(Long.class), any(Persona.class))).thenReturn(updatedPersona);
+		when(servicio.update(any(Long.class), any(Cliente.class))).thenReturn(updatedPersona);
 
 		// Act & Assert
 		mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/personas/{id}", id).contentType(MediaType.APPLICATION_JSON)
@@ -250,7 +250,7 @@ class PersonaControllerTest {
 	void testUpdate_Exception() throws Exception {
 		// Arrange
 		Long id = 1L;
-		when(servicio.update(any(Long.class), any(Persona.class)))
+		when(servicio.update(any(Long.class), any(Cliente.class)))
 				.thenThrow(new Exception("Error al actualizar la persona"));
 
 		// Act & Assert
@@ -263,9 +263,9 @@ class PersonaControllerTest {
 	void testSearchNombre_Success() throws Exception {
 		// Arrange
 		String filtro = "Pedro";
-		Persona persona = new Persona();
+		Cliente persona = new Cliente();
 		persona.setNombre("Pedro");
-		List<Persona> personas = new ArrayList<>();
+		List<Cliente> personas = new ArrayList<>();
 		personas.add(persona);
 		when(servicio.searchNombre(filtro)).thenReturn(personas);
 
@@ -289,9 +289,9 @@ class PersonaControllerTest {
 	void testSearchApellido_Success() throws Exception {
 		// Arrange
 		String filtro = "Martinez";
-		Persona persona = new Persona();
+		Cliente persona = new Cliente();
 		persona.setApellido("Martinez");
-		List<Persona> personas = new ArrayList<>();
+		List<Cliente> personas = new ArrayList<>();
 		personas.add(persona);
 		when(servicio.searchApellido(filtro)).thenReturn(personas);
 
@@ -315,9 +315,9 @@ class PersonaControllerTest {
 	void testSearchNotName_Success() throws Exception {
 		// Arrange
 		String filtro = "Martinez";
-		Persona persona = new Persona();
+		Cliente persona = new Cliente();
 		persona.setNombre("Juan");
-		List<Persona> personas = new ArrayList<>();
+		List<Cliente> personas = new ArrayList<>();
 		personas.add(persona);
 		when(servicio.searchNotName(filtro)).thenReturn(personas);
 
@@ -341,9 +341,9 @@ class PersonaControllerTest {
 	void testSearchNombreEnding_Success() throws Exception {
 		// Arrange
 		String filtro = "ez";
-		Persona persona = new Persona();
+		Cliente persona = new Cliente();
 		persona.setNombre("Lopez");
-		List<Persona> personas = new ArrayList<>();
+		List<Cliente> personas = new ArrayList<>();
 		personas.add(persona);
 		when(servicio.searchNombreEnding(filtro)).thenReturn(personas);
 
@@ -367,11 +367,11 @@ class PersonaControllerTest {
     void testSearchDni_Success() throws Exception {
         // Arrange
         String filtro = "12345678A";
-        Persona persona = new Persona();
+        Cliente persona = new Cliente();
         persona.setNombre("Pedro");
         persona.setApellido("Martinez");
         persona.setDni(filtro);
-        List<Persona> personas = new ArrayList<>();
+        List<Cliente> personas = new ArrayList<>();
         personas.add(persona);
         when(servicio.searchDni(filtro)).thenReturn(personas);
 
@@ -397,11 +397,11 @@ class PersonaControllerTest {
     void testSearchByLocalidad_Success() throws Exception {
         // Arrange
         String localidad = "Guarroman";
-        Persona persona = new Persona();
+        Cliente persona = new Cliente();
         persona.setNombre("Pedro");
         persona.setApellido("Martinez");
         persona.setDni("12345678A");
-        List<Persona> personas = new ArrayList<>();
+        List<Cliente> personas = new ArrayList<>();
         personas.add(persona);
         when(servicio.searchDomicilio_Loc_Den(localidad)).thenReturn(personas);
 
@@ -428,11 +428,11 @@ class PersonaControllerTest {
         // Arrange
         String calle = "San Pepito";
         int numero = 2;
-        Persona persona = new Persona();
+        Cliente persona = new Cliente();
         persona.setNombre("Pedro");
         persona.setApellido("Martinez");
         persona.setDni("12345678A");
-        List<Persona> personas = new ArrayList<>();
+        List<Cliente> personas = new ArrayList<>();
         personas.add(persona);
         when(servicio.searchDomicilio_Calle_Numero(calle, numero)).thenReturn(personas);
 

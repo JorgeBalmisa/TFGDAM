@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.example.main.entities.Base;
-import com.example.main.entities.Persona;
+import com.example.main.entities.Cliente;
 import com.example.main.repositories.BaseRepository;
 import com.example.main.services.BaseService;
 
@@ -26,17 +26,6 @@ public abstract class BaseServiceImpl<T extends Base, ID extends Serializable> i
 	public List<T> findAll() throws Exception {
 		try {
 			List<T> entities = baseRepository.findAll();
-			return entities;
-		} catch (Exception e) {
-			throw new Exception(e.getMessage());
-		}
-	}
-
-	@Override
-	@Transactional
-	public Page<T> findAll(Pageable pageable) throws Exception {
-		try {
-			Page<T> entities = baseRepository.findAll(pageable);
 			return entities;
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());

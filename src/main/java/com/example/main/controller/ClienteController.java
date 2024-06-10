@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.main.entities.Persona;
-import com.example.main.servicesImpl.PersonaServiceImpl;
+import com.example.main.entities.Cliente;
+import com.example.main.servicesImpl.ClienteServiceImpl;
 
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping(path = "api/v1/personas")
-public class PersonaController extends BaseControllerImpl<Persona, PersonaServiceImpl> {
+public class ClienteController extends BaseControllerImpl<Cliente, ClienteServiceImpl> {
 
 	@GetMapping("/searchNombre")
 	public ResponseEntity<?> searchNombre(@RequestParam String filtro) {

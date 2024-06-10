@@ -20,22 +20,22 @@ import jakarta.transaction.Transactional;
 @Service
 public class PersonaServiceImpl extends BaseServiceImpl<Persona, Long> implements PersonaService {
 
-	@Autowired
-	private PersonaRepository personaRepository;
+	private final PersonaRepository PERSONAREPOSITORY;
+    private final LocalidadService LOCALIDADSERVICE;
 
-	@Autowired
-	private LocalidadService localidadService;
+    private static final String LETTERS = "TRWAGMYFPDXBNJZSQVHLCKE";
 
-	private static final String LETTERS = "TRWAGMYFPDXBNJZSQVHLCKE";
-
-	public PersonaServiceImpl(BaseRepository<Persona, Long> baseRepository) {
-		super(baseRepository);
-	}
+    
+    public PersonaServiceImpl(PersonaRepository personaRepository, LocalidadService localidadService) {
+        super(personaRepository);
+        this.PERSONAREPOSITORY = personaRepository;
+        this.LOCALIDADSERVICE = localidadService;
+    }
 
 	@Override
 	public List<Persona> searchNombre(String filtro) throws Exception {
 		try {
-			return personaRepository.findByNombreContaining(filtro);
+			return PERSONAREPOSITORY.findByNombreContaining(filtro);
 
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
@@ -53,8 +53,8 @@ public class PersonaServiceImpl extends BaseServiceImpl<Persona, Long> implement
 			}
 			if (persona.getDomicilio() != null && persona.getDomicilio().getLocalidad() != null) {
 				Localidad localidad = persona.getDomicilio().getLocalidad();
-				// Crear la localidad si no ha sido creada aún
-				localidad = localidadService.save(localidad);
+				// Crea la localidad si no ha sido creada aún
+				localidad = LOCALIDADSERVICE.save(localidad);
 				persona.getDomicilio().setLocalidad(localidad);
 			}
 			return super.save(persona);
@@ -73,7 +73,7 @@ public class PersonaServiceImpl extends BaseServiceImpl<Persona, Long> implement
 	@Override
 	public List<Persona> searchApellido(String filtro) throws Exception {
 		try {
-			return personaRepository.findByApellidoContaining(filtro);
+			return PERSONAREPOSITORY.findByApellidoContaining(filtro);
 			
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
@@ -83,7 +83,7 @@ public class PersonaServiceImpl extends BaseServiceImpl<Persona, Long> implement
 	@Override
 	public List<Persona> searchNotName(String filtro) throws Exception {
 		try {
-			return personaRepository.findByNombreIsNot(filtro);
+			return PERSONAREPOSITORY.findByNombreIsNot(filtro);
 			
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
@@ -93,7 +93,7 @@ public class PersonaServiceImpl extends BaseServiceImpl<Persona, Long> implement
 	@Override
 	public List<Persona> searchNombreEnding(String filtro) throws Exception {
 		try {
-			return personaRepository.findByNombreEndingWith(filtro);
+			return PERSONAREPOSITORY.findByNombreEndingWith(filtro);
 			
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
@@ -102,17 +102,17 @@ public class PersonaServiceImpl extends BaseServiceImpl<Persona, Long> implement
 
 	@Override
 	public List<Persona> searchDni(String filtro) throws Exception {
-		return personaRepository.findByDni(filtro);
+		return PERSONAREPOSITORY.findByDni(filtro);
 	}
 
 	@Override
 	public List<Persona> searchDomicilio_Loc_Den(String filtro) throws Exception {
-		return personaRepository.findByDomicilio_Localidad_Denominacion(filtro);
+		return PERSONAREPOSITORY.findByDomicilio_Localidad_Denominacion(filtro);
 	}
 
 	@Override
 	public List<Persona> searchDomicilio_Calle_Numero(String calle, Integer numero) throws Exception {
-		return personaRepository.findByDomicilio_CalleAndDomicilio_Numero(calle, numero);
+		return PERSONAREPOSITORY.findByDomicilio_CalleAndDomicilio_Numero(calle, numero);
 	}
 	
 	

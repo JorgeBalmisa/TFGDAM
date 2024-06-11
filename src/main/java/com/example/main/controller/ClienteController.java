@@ -1,20 +1,36 @@
 package com.example.main.controller;
 
+import com.example.main.model.Domicilio;
+import com.example.main.service.servicesImpl.DomicilioServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.example.main.entities.Cliente;
-import com.example.main.servicesImpl.ClienteServiceImpl;
+import com.example.main.model.Cliente;
+import com.example.main.service.servicesImpl.ClienteServiceImpl;
 
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping(path = "api/v1/personas")
 public class ClienteController extends BaseControllerImpl<Cliente, ClienteServiceImpl> {
+
+	@Autowired
+	private DomicilioServiceImpl domicilioService;
+
+	@Override
+	@PostMapping("/save")
+	public ResponseEntity<?> save(@RequestBody Cliente cliente) {
+		try {
+			Domicilio domicilio = cliente.getDomicilio();
+			Domicilio existingDomicilio = domicilioService.saveOrUpdate(domicilio);
+			cliente.setDomicilio(existingDomicilio);
+			Cliente savedCliente = servicio.save(cliente);
+			return ResponseEntity.status(HttpStatus.CREATED).body(savedCliente);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error. " + e.getMessage() + " Inténtelo más tarde\"}");
+		}
+	}
 
 	@GetMapping("/searchNombre")
 	public ResponseEntity<?> searchNombre(@RequestParam String filtro) {
@@ -79,7 +95,4 @@ public class ClienteController extends BaseControllerImpl<Cliente, ClienteServic
             return ResponseEntity.status(404).body("{\"error\": \"" + e.getMessage() + "\"}");
         }
     }
-	
-	
-
 }

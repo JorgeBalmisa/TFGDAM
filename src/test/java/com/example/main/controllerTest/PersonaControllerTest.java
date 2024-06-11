@@ -1,10 +1,10 @@
 package com.example.main.controllerTest;
 
 import com.example.main.controller.ClienteController;
-import com.example.main.entities.Domicilio;
-import com.example.main.entities.Localidad;
-import com.example.main.entities.Cliente;
-import com.example.main.servicesImpl.ClienteServiceImpl;
+import com.example.main.model.Domicilio;
+import com.example.main.model.Localidad;
+import com.example.main.model.Cliente;
+import com.example.main.service.servicesImpl.ClienteServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.BeforeEach;

@@ -4,8 +4,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.main.entities.Autor;
-import com.example.main.servicesImpl.AutorServiceImpl;
+import com.example.main.model.Autor;
+import com.example.main.service.servicesImpl.AutorServiceImpl;
 
 @RestController
 @CrossOrigin(origins = "*")

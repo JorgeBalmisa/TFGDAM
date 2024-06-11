@@ -1,7 +1,6 @@
 package com.example.main.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,8 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.example.main.entities.Base;
-import com.example.main.servicesImpl.BaseServiceImpl;
+import com.example.main.model.Base;
+import com.example.main.service.servicesImpl.BaseServiceImpl;
 
 public abstract class BaseControllerImpl<T extends Base, S extends BaseServiceImpl<T, Long>> implements BaseController<T, Long>{
 

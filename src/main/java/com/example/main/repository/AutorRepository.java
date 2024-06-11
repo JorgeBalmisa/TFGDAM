@@ -7,4 +7,6 @@ import com.example.main.model.Autor;
 @Repository
 public interface AutorRepository extends BaseRepository<Autor, Long>{
 
+    Autor findByNombreAndApellido(String nombre, String apellido);
+
 }

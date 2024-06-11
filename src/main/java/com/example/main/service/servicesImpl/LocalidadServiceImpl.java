@@ -6,7 +6,6 @@ import com.example.main.repository.LocalidadRepository;
 import com.example.main.service.LocalidadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -24,7 +23,7 @@ public class LocalidadServiceImpl extends BaseServiceImpl<Localidad, Long> imple
 		return localidadRepository.findByDenominacion(nombre).orElse(null);
 	}
 
-	@Transactional//(propagation = Propagation.REQUIRES_NEW)
+	@Transactional
 	public Localidad saveOrUpdate(Localidad localidad) {
 		Localidad existingLocalidad = findByDenominacion(localidad.getDenominacion());
 		if (existingLocalidad != null) {

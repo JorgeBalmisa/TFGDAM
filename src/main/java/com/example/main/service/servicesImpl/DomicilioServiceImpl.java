@@ -7,7 +7,6 @@ import com.example.main.repository.DomicilioRepository;
 import com.example.main.service.DomicilioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -28,7 +27,7 @@ public class DomicilioServiceImpl extends BaseServiceImpl<Domicilio, Long> imple
         return domicilioRepository.findByCalleAndNumeroAndLocalidad(calle, numero, localidad).orElse(null);
     }
 
-    @Transactional//(propagation = Propagation.NESTED)
+    @Transactional
     public Domicilio saveOrUpdate(Domicilio domicilio) {
         Localidad localidad = localidadService.saveOrUpdate(domicilio.getLocalidad());
         Domicilio existingDomicilio = findByCalleAndNumeroAndLocalidad(domicilio.getCalle(), domicilio.getNumero(), localidad);

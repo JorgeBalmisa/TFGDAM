@@ -1,18 +1,16 @@
 package com.example.main.service.servicesImpl;
 
-import java.util.List;
-import java.util.Random;
-
+import com.example.main.model.Cliente;
+import com.example.main.model.Localidad;
+import com.example.main.repository.ClienteRepository;
+import com.example.main.service.ClienteService;
+import com.example.main.service.LocalidadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.example.main.model.Localidad;
-import com.example.main.model.Cliente;
-import com.example.main.repository.ClienteRepository;
-import com.example.main.service.LocalidadService;
-import com.example.main.service.ClienteService;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Random;
 
 
 @Service
@@ -42,7 +40,7 @@ public class ClienteServiceImpl extends BaseServiceImpl<Cliente, Long> implement
 	}
 
 	@Override
-	@Transactional//(propagation = Propagation.REQUIRED)
+	@Transactional
 	public Cliente save(Cliente persona) throws Exception {
 		try {
 

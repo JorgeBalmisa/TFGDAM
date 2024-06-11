@@ -23,10 +23,10 @@ public class Libro extends Base {
     @Column(name = "paginas")
     private Integer paginas;
 
-    @Column(name = "fecha")
+    @Column(name = "fecha_de_salida")
     private Integer fecha;
 
-    @ManyToMany(cascade = CascadeType.REFRESH)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "libro_autores",
             joinColumns = @JoinColumn(name = "libro_id"),
@@ -38,7 +38,7 @@ public class Libro extends Base {
     private String editorial;
 
     @Column(name = "stock_fisico")
-    private String cantidad;
+    private Integer cantidad;
 
     @ManyToMany(mappedBy = "libros")
     private List<Prestamo> prestamos = new ArrayList<>();

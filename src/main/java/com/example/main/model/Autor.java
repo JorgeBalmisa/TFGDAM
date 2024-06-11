@@ -1,5 +1,6 @@
 package com.example.main.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.ManyToMany;
 
 import jakarta.persistence.Column;
@@ -34,5 +35,6 @@ public class Autor extends Base {
     private String biografia;
 
     @ManyToMany(mappedBy = "autores")
+    @JsonIgnore
     private List<Libro> libros = new ArrayList<>();
 }

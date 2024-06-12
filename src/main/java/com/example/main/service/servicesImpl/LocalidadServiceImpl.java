@@ -1,7 +1,9 @@
 package com.example.main.service.servicesImpl;
 
+import com.example.main.model.Domicilio;
 import com.example.main.model.Localidad;
 import com.example.main.repository.BaseRepository;
+import com.example.main.repository.DomicilioRepository;
 import com.example.main.repository.LocalidadRepository;
 import com.example.main.service.LocalidadService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,9 @@ public class LocalidadServiceImpl extends BaseServiceImpl<Localidad, Long> imple
 
 	@Autowired
 	private LocalidadRepository localidadRepository;
+
+	@Autowired
+	private DomicilioRepository domicilioRepository;
 
 	public LocalidadServiceImpl(BaseRepository<Localidad, Long> baseRepository) {
 		super(baseRepository);
@@ -31,5 +36,19 @@ public class LocalidadServiceImpl extends BaseServiceImpl<Localidad, Long> imple
 		} else {
 			return localidadRepository.save(localidad);
 		}
+	}
+
+
+	@Transactional
+	public Localidad updateLocalidad(Long domicilioId, Long localidadId, String nuevaDenom) {
+		Domicilio domicilio = domicilioRepository.findById(domicilioId)
+				.orElseThrow(() -> new RuntimeException("Domicilio no encontrado"));
+
+		Localidad localidad = localidadRepository.findById(localidadId)
+				.orElseThrow(() -> new RuntimeException("Localidad no encontrada"));
+
+		localidad.setDenominacion(nuevaDenom);
+
+		return localidadRepository.save(localidad);
 	}
 }

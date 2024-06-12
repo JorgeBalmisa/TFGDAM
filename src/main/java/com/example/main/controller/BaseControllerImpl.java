@@ -28,7 +28,7 @@ public abstract class BaseControllerImpl<T extends Base, S extends BaseServiceIm
 	}
 	
 
-	@GetMapping("/{id}")
+	@GetMapping("/searchOne/{id}")
 	public ResponseEntity<?> getOne(@PathVariable Long id) {
 		try {
 			T entity = servicio.findById(id);
@@ -55,7 +55,7 @@ public abstract class BaseControllerImpl<T extends Base, S extends BaseServiceIm
 		}
 	}
 
-	@PutMapping("/{id}")
+	@PutMapping("/update/{id}")
 	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody T entity) {
 		try {
 			T updatedEntity = servicio.update(id, entity);
@@ -65,7 +65,7 @@ public abstract class BaseControllerImpl<T extends Base, S extends BaseServiceIm
 		}
 	}
 
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		try {
 			boolean deleted = servicio.delete(id);

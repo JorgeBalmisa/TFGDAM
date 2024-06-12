@@ -1,11 +1,7 @@
 package com.example.main.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.ManyToMany;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,7 +30,7 @@ public class Autor extends Base {
     @Column(name = "biografía", length = 1500)
     private String biografia;
 
-    @ManyToMany(mappedBy = "autores")
+    @ManyToMany(mappedBy = "autores", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnore
     private List<Libro> libros = new ArrayList<>();
 }

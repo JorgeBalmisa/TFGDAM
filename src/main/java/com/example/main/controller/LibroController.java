@@ -1,5 +1,6 @@
 package com.example.main.controller;
 
+import com.example.main.model.Autor;
 import com.example.main.model.Libro;
 import com.example.main.service.servicesImpl.LibroServiceImpl;
 import org.springframework.http.HttpStatus;
@@ -46,4 +47,16 @@ public class LibroController extends BaseControllerImpl<Libro, LibroServiceImpl>
         }
     }
 
+    @Override
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Libro libro) {
+        Libro updatedLibro = servicio.updateLibro(id, libro);
+        return ResponseEntity.ok(updatedLibro);
+    }
+
+    @PutMapping("/update/{libroId}/autores/{autorId}")
+    public ResponseEntity<?> addAutorToLibro(@PathVariable Long libroId, @PathVariable Long autorId) {
+        Libro updatedLibro = servicio.addAutorALibro(libroId, autorId);
+        return ResponseEntity.ok(updatedLibro);
+    }
 }

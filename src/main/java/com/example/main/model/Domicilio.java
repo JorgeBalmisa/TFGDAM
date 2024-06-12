@@ -22,7 +22,7 @@ public class Domicilio extends Base{
 	@Column(name = "numero")
 	private Integer numero;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "localidad_id")
 	private Localidad localidad;
 
@@ -40,6 +40,4 @@ public class Domicilio extends Base{
 	public int hashCode() {
 		return Objects.hash(calle, numero, localidad);
 	}
-
-
 }

@@ -26,7 +26,7 @@ public class Cliente extends Base {
     @Column(name = "dni", unique = true, nullable = false)
     private String dni;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "fk_domicilio")
     private Domicilio domicilio;
 

@@ -1,10 +1,13 @@
 package com.example.main.model;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import jakarta.persistence.*;
-import lombok.*;
 
 @Entity
 @Table(name = "libro")
@@ -26,7 +29,7 @@ public class Libro extends Base {
     @Column(name = "fecha_de_salida")
     private Integer fecha;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinTable(
             name = "libro_autores",
             joinColumns = @JoinColumn(name = "libro_id"),

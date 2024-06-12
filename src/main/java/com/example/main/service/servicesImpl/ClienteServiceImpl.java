@@ -1,6 +1,7 @@
 package com.example.main.service.servicesImpl;
 
 import com.example.main.model.Cliente;
+import com.example.main.model.Domicilio;
 import com.example.main.model.Localidad;
 import com.example.main.repository.ClienteRepository;
 import com.example.main.service.ClienteService;
@@ -111,7 +112,18 @@ public class ClienteServiceImpl extends BaseServiceImpl<Cliente, Long> implement
 	public List<Cliente> searchDomicilio_Calle_Numero(String calle, Integer numero) throws Exception {
 		return clienteRepository.findByDomicilio_CalleAndDomicilio_Numero(calle, numero);
 	}
-	
-	
 
+	@Transactional
+	public Cliente updateCliente(Long clienteId, Cliente clienteActualiz) {
+		Cliente cliente = clienteRepository.findById(clienteId)
+				.orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+
+		cliente.setNombre(clienteActualiz.getNombre());
+		cliente.setApellido(clienteActualiz.getApellido());
+		cliente.setDni(clienteActualiz.getDni());
+
+		return clienteRepository.save(cliente);
+	}
 }
+
+

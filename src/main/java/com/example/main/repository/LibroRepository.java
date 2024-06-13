@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface LibroRepository extends BaseRepository<Libro, Long>{
 
-    List<Libro> findByTitulo(String titulo);
+    List<Libro> findByTituloContainingIgnoreCase(String titulo);
 
-    List<Libro> findByGenero(String genero);
+    List<Libro> findByGeneroContainingIgnoreCase(String genero);
 
     @Query("SELECT l FROM Libro l JOIN l.autores a WHERE LOWER(a.nombre) = LOWER(:nombreAutor)")
     List<Libro> findByAutores(String nombreAutor);

@@ -61,7 +61,7 @@ public abstract class BaseControllerImpl<T extends Base, S extends BaseServiceIm
 			T updatedEntity = servicio.update(id, entity);
 			return ResponseEntity.status(HttpStatus.OK).body(updatedEntity);
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error al actualizar la persona\"}");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error al actualizar la entidad\"}");
 		}
 	}
 

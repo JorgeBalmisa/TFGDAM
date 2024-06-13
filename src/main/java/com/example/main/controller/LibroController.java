@@ -3,15 +3,31 @@ package com.example.main.controller;
 import com.example.main.model.Autor;
 import com.example.main.model.Libro;
 import com.example.main.service.servicesImpl.LibroServiceImpl;
+
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.main.model.*;
 
 
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping(path = "api/v1/libros")
 public class LibroController extends BaseControllerImpl<Libro, LibroServiceImpl> {
+	
+	
+	
+	@GetMapping("/")
+    public ResponseEntity<?> getAll() {
+        try {
+            List<LibroDTO> libros = servicio.findAllLibros();
+            return ResponseEntity.status(HttpStatus.OK).body(libros);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\":\"Error. Inténtelo más tarde\"}");
+        }
+    }
 
     @GetMapping("/searchTitulo")
     public ResponseEntity<?> searchNombre(@RequestParam String filtro) {

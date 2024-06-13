@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class LocalidadServiceImpl extends BaseServiceImpl<Localidad, Long> implements LocalidadService{
+public class LocalidadServiceImpl extends BaseServiceImpl<Localidad, Long> implements LocalidadService {
 
 	@Autowired
 	private LocalidadRepository localidadRepository;
@@ -36,19 +36,5 @@ public class LocalidadServiceImpl extends BaseServiceImpl<Localidad, Long> imple
 		} else {
 			return localidadRepository.save(localidad);
 		}
-	}
-
-
-	@Transactional
-	public Localidad updateLocalidad(Long domicilioId, Long localidadId, String nuevaDenom) {
-		Domicilio domicilio = domicilioRepository.findById(domicilioId)
-				.orElseThrow(() -> new RuntimeException("Domicilio no encontrado"));
-
-		Localidad localidad = localidadRepository.findById(localidadId)
-				.orElseThrow(() -> new RuntimeException("Localidad no encontrada"));
-
-		localidad.setDenominacion(nuevaDenom);
-
-		return localidadRepository.save(localidad);
 	}
 }

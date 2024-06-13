@@ -12,7 +12,7 @@ import com.example.main.service.servicesImpl.ClienteServiceImpl;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping(path = "api/v1/clientes")
+@RequestMapping(path = "api/v1/personas")
 public class ClienteController extends BaseControllerImpl<Cliente, ClienteServiceImpl> {
 
 	@Autowired

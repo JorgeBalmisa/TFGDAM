@@ -5,6 +5,7 @@ import com.example.main.model.Domicilio;
 import com.example.main.model.Localidad;
 import com.example.main.model.Cliente;
 import com.example.main.service.servicesImpl.ClienteServiceImpl;
+import com.example.main.service.servicesImpl.DomicilioServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -28,12 +29,13 @@ import static org.mockito.ArgumentMatchers.any;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(ClienteController.class)
-class PersonaControllerTest {
+class ClienteControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -43,6 +45,8 @@ class PersonaControllerTest {
 
 	@MockBean
 	private ClienteServiceImpl servicio;
+	@MockBean
+    private DomicilioServiceImpl domicilioService;
 
 	@BeforeEach
 	public void setUp() {
@@ -50,46 +54,48 @@ class PersonaControllerTest {
 	}
 
 	@Test
-	void testGetAll_Success() throws Exception {
-		// Arrange
-		Localidad localidad = new Localidad();
-		localidad.setDenominacion("Guarroman");
+    void testGetAll_Success() throws Exception {
+        // Arrange
+        Localidad localidad = new Localidad();
+        localidad.setDenominacion("Guarroman");
 
-		Domicilio domicilio = new Domicilio();
-		domicilio.setCalle("San Pepito");
-		domicilio.setNumero(2);
-		domicilio.setLocalidad(localidad);
+        Domicilio domicilio = new Domicilio();
+        domicilio.setCalle("San Pepito");
+        domicilio.setNumero(2);
+        domicilio.setLocalidad(localidad);
 
-		Cliente persona1 = new Cliente();
-		persona1.setNombre("Pedro");
-		persona1.setApellido("Martinez");
-		persona1.setDni("12345678A");
-		persona1.setDomicilio(domicilio);
+        Cliente persona1 = new Cliente();
+        persona1.setNombre("Pedro");
+        persona1.setApellido("Martinez");
+        persona1.setDni("12345678A");
+        persona1.setDomicilio(domicilio);
 
-		Cliente persona2 = new Cliente();
-		persona2.setNombre("Juan");
-		persona2.setApellido("Perez");
-		persona2.setDni("87654321B");
-		persona2.setDomicilio(domicilio);
+        Cliente persona2 = new Cliente();
+        persona2.setNombre("Juan");
+        persona2.setApellido("Perez");
+        persona2.setDni("87654321B");
+        persona2.setDomicilio(domicilio);
 
-		List<Cliente> expectedResponse = Arrays.asList(persona1, persona2);
-		when(servicio.findAll()).thenReturn(expectedResponse);
+        List<Cliente> expectedResponse = Arrays.asList(persona1, persona2);
+        when(servicio.findAll()).thenReturn(expectedResponse);
 
-		// Act & Assert
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/")).andExpect(status().isOk())
-				.andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
-				.andExpect(MockMvcResultMatchers.jsonPath("$[0].nombre").value("Pedro"))
-				.andExpect(MockMvcResultMatchers.jsonPath("$[1].nombre").value("Juan"));
-	}
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/clientes/"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].nombre").value("Pedro"))
+                .andExpect(jsonPath("$[1].nombre").value("Juan"));
+    }
 
 	@Test
 	void testGetAll_Exception() throws Exception {
-		// Arrange
-		when(servicio.findAll()).thenThrow(new Exception("Error. Inténtelo más tarde"));
+	    // Arrange
+	    when(servicio.findAll()).thenThrow(new RuntimeException("Simulated service exception"));
 
-		// Act & Assert
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/")).andExpect(status().isNotFound())
-				.andExpect(MockMvcResultMatchers.content().string("{\"error\":\"Error. Inténtelo más tarde\"}"));
+	    // Act & Assert
+	    mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/clientes/"))
+	            .andExpect(status().isNotFound())
+	            .andExpect(content().json("{\"error\":\"Error. Inténtelo más tarde\"}"));
 	}
 
 	@Test
@@ -113,7 +119,7 @@ class PersonaControllerTest {
 		when(servicio.findById(id)).thenReturn(persona);
 
 		// Act & Assert
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/{id}", id)).andExpect(status().isOk())
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/clientes/{id}", id)).andExpect(status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("$.nombre").value("Pedro"))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.apellido").value("Martinez"));
 	}
@@ -125,7 +131,7 @@ class PersonaControllerTest {
 		when(servicio.findById(id)).thenReturn(null);
 
 		// Act & Assert
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/{id}", id)).andExpect(status().isNotFound())
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/clientes/{id}", id)).andExpect(status().isNotFound())
 				.andExpect(MockMvcResultMatchers.content().string("{\"error\":\"Persona no encontrada\"}"));
 	}
 
@@ -136,7 +142,7 @@ class PersonaControllerTest {
 		when(servicio.findById(id)).thenThrow(new Exception("Error. Inténtelo más tarde"));
 
 		// Act & Assert
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/{id}", id))
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/clientes/{id}", id))
 				.andExpect(status().isInternalServerError())
 				.andExpect(MockMvcResultMatchers.content().string("{\"error\":\"Error. Inténtelo más tarde\"}"));
 	}
@@ -148,7 +154,7 @@ class PersonaControllerTest {
 		when(servicio.delete(id)).thenReturn(true);
 
 		// Act & Assert
-		mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/personas/{id}", id)).andExpect(status().isNoContent());
+		mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/clientes/{id}", id)).andExpect(status().isNoContent());
 	}
 
 	@Test
@@ -158,7 +164,7 @@ class PersonaControllerTest {
 		when(servicio.delete(id)).thenReturn(false);
 
 		// Act & Assert
-		mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/personas/{id}", id)).andExpect(status().isNotFound())
+		mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/clientes/{id}", id)).andExpect(status().isNotFound())
 				.andExpect(MockMvcResultMatchers.content().string("{\"error\":\"Persona no encontrada\"}"));
 	}
 
@@ -169,7 +175,7 @@ class PersonaControllerTest {
 		when(servicio.delete(id)).thenThrow(new Exception("Error al eliminar la persona"));
 
 		// Act & Assert
-		mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/personas/{id}", id))
+		mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/clientes/{id}", id))
 				.andExpect(status().isInternalServerError())
 				.andExpect(MockMvcResultMatchers.content().string("{\"error\":\"Error al eliminar la persona\"}"));
 	}
@@ -194,7 +200,7 @@ class PersonaControllerTest {
 		when(servicio.save(any())).thenReturn(persona);
 
 		// Act & Assert
-		mockMvc.perform(post("/api/v1/personas/save").contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(post("/api/v1/clientes/save").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(persona))).andExpect(status().isCreated())
 				.andExpect(jsonPath("$.nombre").value("Pedro")).andExpect(jsonPath("$.apellido").value("Martinez"))
 				.andExpect(jsonPath("$.dni").value("12345678A"))
@@ -223,7 +229,7 @@ class PersonaControllerTest {
 		when(servicio.save(any())).thenThrow(new Exception("Error al guardar la persona"));
 
 		// Act & Assert
-		mockMvc.perform(post("/api/v1/personas/save").contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(post("/api/v1/clientes/save").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(persona))).andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.error").value("Error. Error al guardar la persona Inténtelo más tarde"));
 	}
@@ -241,7 +247,7 @@ class PersonaControllerTest {
 		when(servicio.update(any(Long.class), any(Cliente.class))).thenReturn(updatedPersona);
 
 		// Act & Assert
-		mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/personas/{id}", id).contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/clientes/{id}", id).contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"nombre\": \"UpdatedName\", \"apellido\": \"UpdatedApellido\", \"dni\": \"12345678A\" }"))
 				.andExpect(status().isOk());
 	}
@@ -254,7 +260,7 @@ class PersonaControllerTest {
 				.thenThrow(new Exception("Error al actualizar la persona"));
 
 		// Act & Assert
-		mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/personas/{id}", id).contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/clientes/{id}", id).contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"nombre\": \"UpdatedName\", \"apellido\": \"UpdatedApellido\", \"dni\": \"12345678A\" }"))
 				.andExpect(status().isBadRequest());
 	}
@@ -270,7 +276,7 @@ class PersonaControllerTest {
 		when(servicio.searchNombre(filtro)).thenReturn(personas);
 
 		// Act & Assert
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchNombre").param("filtro", filtro))
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/clientes/searchNombre").param("filtro", filtro))
 				.andExpect(status().isOk());
 	}
 
@@ -281,7 +287,7 @@ class PersonaControllerTest {
 		when(servicio.searchNombre(filtro)).thenThrow(new Exception("Persona no encontrada"));
 
 		// Act & Assert
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchNombre").param("filtro", filtro))
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/clientes/searchNombre").param("filtro", filtro))
 				.andExpect(status().isNotFound());
 	}
 
@@ -296,7 +302,7 @@ class PersonaControllerTest {
 		when(servicio.searchApellido(filtro)).thenReturn(personas);
 
 		// Act & Assert
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchApellido").param("filtro", filtro))
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/clientes/searchApellido").param("filtro", filtro))
 				.andExpect(status().isOk());
 	}
 
@@ -307,7 +313,7 @@ class PersonaControllerTest {
 		when(servicio.searchApellido(filtro)).thenThrow(new Exception("Persona no encontrada"));
 
 		// Act & Assert
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchApellido").param("filtro", filtro))
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/clientes/searchApellido").param("filtro", filtro))
 				.andExpect(status().isNotFound());
 	}
 
@@ -322,7 +328,7 @@ class PersonaControllerTest {
 		when(servicio.searchNotName(filtro)).thenReturn(personas);
 
 		// Act & Assert
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchNotName").param("filtro", filtro))
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/clientes/searchNotName").param("filtro", filtro))
 				.andExpect(status().isOk());
 	}
 
@@ -333,7 +339,7 @@ class PersonaControllerTest {
 		when(servicio.searchNotName(filtro)).thenThrow(new Exception("Persona no encontrada"));
 
 		// Act & Assert
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchNotName").param("filtro", filtro))
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/clientes/searchNotName").param("filtro", filtro))
 				.andExpect(status().isNotFound());
 	}
 
@@ -348,7 +354,7 @@ class PersonaControllerTest {
 		when(servicio.searchNombreEnding(filtro)).thenReturn(personas);
 
 		// Act & Assert
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchNombreEnding").param("filtro", filtro))
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/clientes/searchNombreEnding").param("filtro", filtro))
 				.andExpect(status().isOk());
 	}
 
@@ -359,7 +365,7 @@ class PersonaControllerTest {
 		when(servicio.searchNombreEnding(filtro)).thenThrow(new Exception("Persona no encontrada"));
 
 		// Act & Assert
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchNombreEnding").param("filtro", filtro))
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/clientes/searchNombreEnding").param("filtro", filtro))
 				.andExpect(status().isNotFound());
 	}
 	
@@ -376,7 +382,7 @@ class PersonaControllerTest {
         when(servicio.searchDni(filtro)).thenReturn(personas);
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchDni")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/clientes/searchDni")
                 .param("filtro", filtro))
                 .andExpect(status().isOk());
     }
@@ -388,7 +394,7 @@ class PersonaControllerTest {
         when(servicio.searchDni(filtro)).thenThrow(new Exception("Persona no encontrada"));
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchDni")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/clientes/searchDni")
                 .param("filtro", filtro))
                 .andExpect(status().isNotFound());
     }
@@ -406,7 +412,7 @@ class PersonaControllerTest {
         when(servicio.searchDomicilio_Loc_Den(localidad)).thenReturn(personas);
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchByLocalidad")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/clientes/searchByLocalidad")
                 .param("localidad", localidad))
                 .andExpect(status().isOk());
     }
@@ -418,7 +424,7 @@ class PersonaControllerTest {
         when(servicio.searchDomicilio_Loc_Den(localidad)).thenThrow(new Exception("Error al buscar personas"));
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchByLocalidad")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/clientes/searchByLocalidad")
                 .param("localidad", localidad))
                 .andExpect(status().isNotFound());
     }
@@ -437,7 +443,7 @@ class PersonaControllerTest {
         when(servicio.searchDomicilio_Calle_Numero(calle, numero)).thenReturn(personas);
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchByDomicilio")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/clientes/searchByDomicilio")
                 .param("calle", calle)
                 .param("numero", String.valueOf(numero)))
                 .andExpect(status().isOk());
@@ -451,7 +457,7 @@ class PersonaControllerTest {
         when(servicio.searchDomicilio_Calle_Numero(calle, numero)).thenThrow(new Exception("Error al buscar personas"));
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/personas/searchByDomicilio")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/clientes/searchByDomicilio")
                 .param("calle", calle)
                 .param("numero", String.valueOf(numero)))
                 .andExpect(status().isNotFound());

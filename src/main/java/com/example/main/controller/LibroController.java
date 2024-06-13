@@ -46,6 +46,8 @@ public class LibroController extends BaseControllerImpl<Libro, LibroServiceImpl>
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\": \"" + e.getMessage() + "\"}");
         }
     }
+    
+    
 
     @Override
     @PutMapping("/update/{id}")
